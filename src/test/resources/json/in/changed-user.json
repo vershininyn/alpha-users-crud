@@ -1,0 +1,9 @@
+{
+  "id": "cde680a4-e61f-4ad8-98ce-b7d5c1627fe6",
+  "login": "login",
+  "password": "password",
+  "firstname": "firstname",
+  "secondname": "secondname",
+  "thirdname": "thirdname",
+  "isBanned": false
+}

@@ -1,0 +1,8 @@
+{
+  "login": "login",
+  "password": "password",
+  "firstname": "firstName",
+  "secondname": "secondName",
+  "thirdname": "thirdName",
+  "isBanned": false
+}
