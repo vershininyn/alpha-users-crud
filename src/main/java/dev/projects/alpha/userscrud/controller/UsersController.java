@@ -2,7 +2,6 @@ package dev.projects.alpha.userscrud.controller;
 
 import dev.projects.alpha.userscrud.domain.UserDTO;
 import dev.projects.alpha.userscrud.domain.UserRequestDTO;
-import dev.projects.alpha.userscrud.domain.UserUUIDDTO;
 import dev.projects.alpha.userscrud.domain.UsersListDTO;
 import dev.projects.alpha.userscrud.service.UsersService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping(
@@ -28,20 +28,22 @@ public class UsersController {
     }
 
     @PostMapping(value = "/createUser")
-    public ResponseEntity<UserUUIDDTO> createUser(@RequestBody UserRequestDTO newUser) {
+    public ResponseEntity<Map<String, Integer>> createUser(@RequestBody UserRequestDTO newUser) {
         UserDTO user = usersService.createUser(newUser);
 
-        return ResponseEntity.ok(new UserUUIDDTO(user.getId()));
+        return ResponseEntity.ok(Map.of("id", user.getId()));
     }
 
     @PutMapping(value = "/changeUser")
-    public ResponseEntity<UserDTO> changeUser(@RequestBody UserDTO changedUser) {
+    public ResponseEntity<UserDTO> changeUser(@RequestBody UserDTO user) {
+        UserDTO changedUser = usersService.changeUser(user);
+
         return ResponseEntity.ok(changedUser);
     }
 
     @PutMapping(value = "/banUser")
-    public ResponseEntity<UserDTO> banUser(@RequestBody UserUUIDDTO uuidUserDTO) {
-        UserDTO user = usersService.banUser(uuidUserDTO);
+    public ResponseEntity<UserDTO> banUser(@RequestBody Map<String, Integer> dto) {
+        UserDTO user = usersService.banUser(dto);
 
         return ResponseEntity.ok(user);
     }

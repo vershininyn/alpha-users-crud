@@ -2,89 +2,59 @@ package dev.projects.alpha.userscrud.service;
 
 import dev.projects.alpha.userscrud.domain.UserDTO;
 import dev.projects.alpha.userscrud.domain.UserRequestDTO;
-import dev.projects.alpha.userscrud.domain.UserUUIDDTO;
-import lombok.NoArgsConstructor;
+import dev.projects.alpha.userscrud.repository.UserEntity;
+import dev.projects.alpha.userscrud.repository.UserEntityRepository;
+import dev.projects.alpha.userscrud.utils.UserMapper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.UUID;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-
-/*
-CREATE TABLE users (
-    id BIGINT PRIMARY KEY,
-    login VARCHAR(25) UNIQUE,
-    password VARCHAR(50),
-    name VARCHAR(25),
-    surname VARCHAR(25),
-    patronymic VARCHAR(25),
-    is_banned BOOLEAN DEFAULT false
-);
- */
+import java.util.Map;
 
 @Service
 public class UsersService {
+    private UserEntityRepository userRepository;
 
-    //Создание пользователя, изменение пользователя, бан пользователя по ID, получение всех пользователей, получение незабаненных пользователей.
+    @Autowired
+    public UsersService (UserEntityRepository userRepository) {
+        this.userRepository = userRepository;
+    }
 
     public UserDTO createUser(UserRequestDTO userRequest) {
-        return createUser(UUID.randomUUID(), userRequest);
+        UserEntity entity = UserMapper.mapDtoToEntity(userRequest),
+                savedEntity = userRepository.save(entity);
+
+        return UserMapper.mapRequestDtoToUserDto(savedEntity.getId(), userRequest);
     }
 
-    public UserDTO createUser(UUID uuid, UserRequestDTO userRequest) {
-        return UserDTO.builder()
-                .id(uuid)
-                .login(userRequest.getLogin())
-                .password(userRequest.getPassword())
-                .firstname(userRequest.getFirstname())
-                .secondname(userRequest.getSecondname())
-                .thirdname(userRequest.getThirdname())
-                .isBanned(false)
-                .build();
+    public UserDTO changeUser(UserDTO user) {
+        //TODO: check other branches
+
+        UserEntity entity = userRepository.findById(user.getId()).get();
+
+        return UserMapper.mapEntityToDto(entity);
     }
 
-    public UserDTO changeUser(UserDTO changedUser) {
-        return changedUser;
-    }
+    public UserDTO banUser(Map<String, Integer> dto) {
+        Integer id = dto.get("id");
 
-    public UserDTO banUser(UserUUIDDTO uuidUserDTO) {
-        return UserDTO.builder()
-                .id(uuidUserDTO.getUuid())
-                .login("login")
-                .password("password")
-                .firstname("firstname")
-                .secondname("secondname")
-                .thirdname("thirdname")
-                .isBanned(true)
-                .build();
+        UserEntity entity = userRepository.findById(id).get();
+        entity.setIsBanned(true);
+
+        UserEntity savedEntity = userRepository.save(entity);
+
+        return UserMapper.mapEntityToDto(savedEntity);
     }
 
     public List<UserDTO> getAllUsers() {
-        UserDTO user = UserDTO.builder()
-                .id(UUID.randomUUID())
-                .login("login")
-                .password("password")
-                .firstname("firstname")
-                .secondname("secondname")
-                .thirdname("thirdname")
-                .isBanned(false)
-                .build();
+        List<UserEntity> list = userRepository.findAll();
 
-        return Stream.of(user, user, user).collect(Collectors.toList());
+        return UserMapper.mapEntityListToDtoList(list);
     }
 
     public List<UserDTO> getAllUnbannedUsers() {
-        UserDTO user = UserDTO.builder()
-                .id(UUID.randomUUID())
-                .login("login")
-                .password("password")
-                .firstname("firstname")
-                .secondname("secondname")
-                .thirdname("thirdname")
-                .isBanned(false)
-                .build();
+        List<UserEntity> list = userRepository.findByIsBanned(false);
 
-        return Stream.of(user, user, user).collect(Collectors.toList());
+        return UserMapper.mapEntityListToDtoList(list);
     }
 }

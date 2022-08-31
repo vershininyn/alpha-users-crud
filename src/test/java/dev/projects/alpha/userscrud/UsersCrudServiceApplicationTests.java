@@ -3,25 +3,30 @@ package dev.projects.alpha.userscrud;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import dev.projects.alpha.userscrud.domain.UserDTO;
 import dev.projects.alpha.userscrud.domain.UserRequestDTO;
-import dev.projects.alpha.userscrud.domain.UserUUIDDTO;
+import dev.projects.alpha.userscrud.repository.UserEntityRepository;
 import dev.projects.alpha.userscrud.service.UsersService;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.stubbing.Answer;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
+import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.util.ResourceUtils;
+import org.testcontainers.junit.jupiter.Testcontainers;
 
 import java.io.File;
 import java.util.List;
+import java.util.Map;
 
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.core.Is.is;
@@ -31,11 +36,18 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest
 @AutoConfigureMockMvc
+@ActiveProfiles("test")
+@DataJpaTest
+@Testcontainers
+@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 public class UsersCrudServiceApplicationTests {
     @Autowired
     private MockMvc mockMvc;
 
     @Mock
+    private UserEntityRepository userRepository;
+
+    @InjectMocks
     private UsersService usersService;
 
     @Autowired
@@ -82,15 +94,15 @@ public class UsersCrudServiceApplicationTests {
     public void banUserByID() throws Exception {
         File jsonForBanUserDTOFile = ResourceUtils.getFile("classpath:json/in/user-for-ban.json");
 
-        UserUUIDDTO bannedUserDTO = objectMapper.readValue(jsonForBanUserDTOFile, UserUUIDDTO.class);
+        Map<String, Integer> dto = objectMapper.readValue(jsonForBanUserDTOFile, Map.class);
 
-        when(usersService.banUser(bannedUserDTO))
+        when(usersService.banUser(dto))
                 .thenAnswer((Answer<UserDTO>) invocationOnMock -> invocationOnMock.getArgument(0, UserDTO.class));
 
         mockMvc.perform(MockMvcRequestBuilders
                         .put("/banUser")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(bannedUserDTO)))
+                        .content(objectMapper.writeValueAsString(dto)))
                 .andDo(MockMvcResultHandlers.print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.banned", is(true)));
