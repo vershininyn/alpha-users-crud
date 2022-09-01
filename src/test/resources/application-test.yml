@@ -1,22 +1,22 @@
 spring:
   flyway:
-    enabled: true
-    user: h2user
-    password: h2password
-    schemas: PUBLIC
-    url: jdbc:h2:file:/home/dev/projects/java/alpha/alpha-users-crud
-    locations: filesystem:src/main/resources/db/migration
+    enabled: false
+    user: user
+    password: password
+    schemas: public
+    url: jdbc:tc:postgresql:10:///postgres
+    locations: filesystem:src/test/resources/db.migration
     validate-on-migrate: true
   jpa:
-    database-platform: org.hibernate.dialect.H2Dialect
+    database-platform: org.hibernate.dialect.PostgreSQL95Dialect
     hibernate:
       ddl-auto: create-drop
     show-sql: false
   datasource:
     type: com.zaxxer.hikari.HikariDataSource
-    url: jdbc:h2:file:/home/dev/projects/java/alpha/alpha-users-crud
-    driver-class-name: org.h2.Driver
-    username: h2user
-    password: h2password
+    url: jdbc:tc:postgresql:10:///postgres
+    username: user
+    password: password
+    driver-class-name: org.testcontainers.jdbc.ContainerDatabaseDriver
     hikari:
       idle-timeout: 10000

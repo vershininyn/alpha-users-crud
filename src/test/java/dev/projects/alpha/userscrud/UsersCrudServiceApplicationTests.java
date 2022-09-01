@@ -5,8 +5,6 @@ import dev.projects.alpha.userscrud.domain.UserDTO;
 import dev.projects.alpha.userscrud.domain.UserRequestDTO;
 import dev.projects.alpha.userscrud.repository.UserEntityRepository;
 import dev.projects.alpha.userscrud.service.UsersService;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -34,20 +32,19 @@ import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@SpringBootTest
+@SpringBootTest()
 @AutoConfigureMockMvc
 @ActiveProfiles("test")
-@DataJpaTest
 @Testcontainers
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 public class UsersCrudServiceApplicationTests {
     @Autowired
     private MockMvc mockMvc;
 
-    @Mock
+    @Autowired
     private UserEntityRepository userRepository;
 
-    @InjectMocks
+    @Mock
     private UsersService usersService;
 
     @Autowired

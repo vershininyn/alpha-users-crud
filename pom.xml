@@ -20,12 +20,13 @@
         <java.version>17</java.version>
         <testcontainers.version>1.17.3</testcontainers.version>
         <jackson.version>2.13.3</jackson.version>
-        <junit.version>5.9.0</junit.version>
+<!--        <junit.version>5.9.0</junit.version>-->
         <mockito-junit.version>4.7.0</mockito-junit.version>
         <flyway.version>9.2.0</flyway.version>
         <h2.version>2.1.214</h2.version>
         <flyway-maven-plugin.version>9.2.0</flyway-maven-plugin.version>
-        <junit-testcontainers.version>1.17.3</junit-testcontainers.version>
+        <postgresql-testcontainers.version>1.17.3</postgresql-testcontainers.version>
+        <postgresql.version>42.5.0</postgresql.version>
     </properties>
 
     <dependencies>
@@ -42,6 +43,15 @@
             <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
         <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-tomcat</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
             <groupId>org.flywaydb</groupId>
             <artifactId>flyway-core</artifactId>
             <version>${flyway.version}</version>
@@ -56,7 +66,6 @@
             <groupId>com.h2database</groupId>
             <artifactId>h2</artifactId>
             <version>${h2.version}</version>
-            <!--			<scope>runtime</scope>-->
         </dependency>
         <dependency>
             <groupId>org.projectlombok</groupId>
@@ -64,31 +73,28 @@
             <optional>true</optional>
         </dependency>
         <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-tomcat</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-test</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.junit.jupiter</groupId>
-            <artifactId>junit-jupiter-api</artifactId>
-            <version>${junit.version}</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.junit.jupiter</groupId>
-            <artifactId>junit-jupiter-engine</artifactId>
-            <version>${junit.version}</version>
+            <groupId>org.testcontainers</groupId>
+            <artifactId>testcontainers</artifactId>
+            <version>1.17.3</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.testcontainers</groupId>
             <artifactId>junit-jupiter</artifactId>
-            <version>${junit-testcontainers.version}</version>
+            <version>1.17.3</version>
             <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.testcontainers</groupId>
+            <artifactId>postgresql</artifactId>
+            <version>${postgresql-testcontainers.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.postgresql</groupId>
+            <artifactId>postgresql</artifactId>
+            <version>${postgresql.version}</version>
+<!--            <scope>runtime</scope>-->
         </dependency>
         <dependency>
             <groupId>org.mockito</groupId>
@@ -130,7 +136,7 @@
                     <locations>
                         <location>filesystem:src/main/resources/db/migration</location>
                     </locations>
-					<cleanDisabled>false</cleanDisabled>
+                    <cleanDisabled>false</cleanDisabled>
                     <user>h2user</user>
                     <password>h2password</password>
                     <schemas>
@@ -149,6 +155,11 @@
                         </exclude>
                     </excludes>
                 </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>3.0.0-M5</version>
             </plugin>
         </plugins>
     </build>
