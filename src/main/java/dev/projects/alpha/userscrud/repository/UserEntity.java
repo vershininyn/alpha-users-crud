@@ -25,8 +25,9 @@ import java.util.UUID;
 public class UserEntity {
     @Id
     @Column(name = "id", nullable = false)
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "user-sequence-generator")
-    @SequenceGenerator(name = "user-sequence-generator", sequenceName = "user_sequence", allocationSize = 1, initialValue = 1)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+//    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "user-sequence-generator")
+//    @SequenceGenerator(name = "user-sequence-generator", sequenceName = "user_sequence", allocationSize = 1, initialValue = 1)
     private Integer id;
 
     @Column(name = "login", nullable = false, length = 25, unique = true)

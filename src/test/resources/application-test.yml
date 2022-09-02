@@ -1,22 +1,20 @@
 spring:
   flyway:
-    enabled: false
+    enabled: true
     user: user
     password: password
-    schemas: public
-    url: jdbc:tc:postgresql:10:///postgres
-    locations: filesystem:src/test/resources/db.migration
+    schemas: PUBLIC
+    url: jdbc:h2:mem:test;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=TRUE
+    locations: filesystem:src/main/resources/db/migration
     validate-on-migrate: true
   jpa:
-    database-platform: org.hibernate.dialect.PostgreSQL95Dialect
+    database-platform: org.hibernate.dialect.H2Dialect
     hibernate:
-      ddl-auto: create-drop
+      ddl-auto: none
     show-sql: false
   datasource:
     type: com.zaxxer.hikari.HikariDataSource
-    url: jdbc:tc:postgresql:10:///postgres
+    url: jdbc:h2:mem:test;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=TRUE
+    driver-class-name: org.h2.Driver
     username: user
     password: password
-    driver-class-name: org.testcontainers.jdbc.ContainerDatabaseDriver
-    hikari:
-      idle-timeout: 10000
