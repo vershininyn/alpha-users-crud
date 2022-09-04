@@ -2,7 +2,7 @@ package dev.projects.alpha.userscrud.service;
 
 import dev.projects.alpha.userscrud.domain.UserDTO;
 import dev.projects.alpha.userscrud.domain.UserRequestDTO;
-import dev.projects.alpha.userscrud.repository.UserEntity;
+import dev.projects.alpha.userscrud.entity.UserEntity;
 import dev.projects.alpha.userscrud.repository.UserEntityRepository;
 import dev.projects.alpha.userscrud.utils.UserMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,8 +35,8 @@ public class UsersService {
         return UserMapper.mapEntityToDto(entity);
     }
 
-    public UserDTO banUser(Map<String, Integer> dto) {
-        Integer id = dto.get("id");
+    public UserDTO banUser(Map<String, String> dto) {
+        Long id = Long.valueOf(dto.get("id"));
 
         UserEntity entity = userRepository.findById(id).get();
         entity.setIsBanned(true);

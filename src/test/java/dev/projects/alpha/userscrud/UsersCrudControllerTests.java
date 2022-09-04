@@ -12,6 +12,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.ResourceUtils;
 
 import java.io.File;
@@ -24,6 +26,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
 @ActiveProfiles("test")
+@Transactional(isolation = Isolation.REPEATABLE_READ)
 public class UsersCrudControllerTests {
     @Autowired
     private UserEntityRepository usersRepository;
@@ -39,13 +42,11 @@ public class UsersCrudControllerTests {
 
     @Test
     public void createUserByControllerTest() throws Exception {
-        //TODO: на каждый тест своя база
-
         File jsonNewUserDTOFile = ResourceUtils.getFile("classpath:json/in/new-user.json");
 
         UserRequestDTO newUserRequestDTO = objectMapper.readValue(jsonNewUserDTOFile, UserRequestDTO.class);
 
-        ResponseEntity<Map<String, Integer>> responseEntity = usersController.createUser(newUserRequestDTO);
+        ResponseEntity<Map<String, Long>> responseEntity = usersController.createUser(newUserRequestDTO);
 
         assertEquals(responseEntity.getStatusCodeValue(), 200);
         assertEquals(responseEntity.getBody().size(), 1);
@@ -72,7 +73,7 @@ public class UsersCrudControllerTests {
     public void banUserByID() throws Exception {
         File jsonForBanUserDTOFile = ResourceUtils.getFile("classpath:json/in/user-for-ban.json");
 
-        Map<String, Integer> changedUserDTO = objectMapper.readValue(jsonForBanUserDTOFile, Map.class);
+        Map<String, String> changedUserDTO = objectMapper.readValue(jsonForBanUserDTOFile, Map.class);
 
         ResponseEntity<UserDTO> responseEntity = usersController.banUser(changedUserDTO);
 
@@ -88,22 +89,22 @@ public class UsersCrudControllerTests {
         assertEquals(responseEntity.getStatusCodeValue(), 200);
 
         UsersListDTO list = responseEntity.getBody();
-        assertEquals(4, list.getUsers().size());
+        assertEquals(3, list.getUsers().size());
 
-        List<Integer> ids = list.getUsers()
+        List<Long> ids = list.getUsers()
                 .stream()
                 .map(UserDTO::getId)
                 .collect(Collectors.toList());
 
-        assertEquals(List.of(1, 2, 3, 4), ids);
-        assertFalse(ids.contains(5));
+        assertEquals(List.of(1L, 2L, 3L), ids);
+        assertFalse(ids.contains(4L));
 
         List<String> logins = list.getUsers()
                 .stream()
                 .map(UserDTO::getLogin)
                 .collect(Collectors.toList());
 
-        assertEquals(List.of("first_user", "second_user", "third_user", "login"), logins);
+        assertEquals(List.of("first_user", "second_user", "third_user"), logins);
         assertFalse(logins.contains("fourth_user"));
     }
 

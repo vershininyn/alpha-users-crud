@@ -1,6 +1,6 @@
 package dev.projects.alpha.userscrud;
 
-import dev.projects.alpha.userscrud.repository.UserEntity;
+import dev.projects.alpha.userscrud.entity.UserEntity;
 import dev.projects.alpha.userscrud.repository.UserEntityRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

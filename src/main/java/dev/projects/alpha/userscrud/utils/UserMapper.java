@@ -2,7 +2,7 @@ package dev.projects.alpha.userscrud.utils;
 
 import dev.projects.alpha.userscrud.domain.UserDTO;
 import dev.projects.alpha.userscrud.domain.UserRequestDTO;
-import dev.projects.alpha.userscrud.repository.UserEntity;
+import dev.projects.alpha.userscrud.entity.UserEntity;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -38,7 +38,7 @@ public class UserMapper {
                 .build();
     }
     
-    public static UserDTO mapRequestDtoToUserDto(Integer id, UserRequestDTO dto) {
+    public static UserDTO mapRequestDtoToUserDto(Long id, UserRequestDTO dto) {
         return UserDTO.builder()
                 .id(id)
                 .login(dto.getLogin())

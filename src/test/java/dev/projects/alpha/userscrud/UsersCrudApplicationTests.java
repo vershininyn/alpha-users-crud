@@ -16,6 +16,8 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
+import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.ResourceUtils;
 
 import java.io.File;
@@ -31,6 +33,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 @AutoConfigureMockMvc
 @ActiveProfiles("test")
+@Transactional(isolation = Isolation.REPEATABLE_READ)
 public class UsersCrudApplicationTests {
     @Autowired
     private MockMvc mockMvc;
@@ -85,7 +88,7 @@ public class UsersCrudApplicationTests {
     public void banUserByID() throws Exception {
         File jsonForBanUserDTOFile = ResourceUtils.getFile("classpath:json/in/user-for-ban.json");
 
-        Map<String, Integer> dto = objectMapper.readValue(jsonForBanUserDTOFile, Map.class);
+        Map<String, String> dto = objectMapper.readValue(jsonForBanUserDTOFile, Map.class);
 
         when(usersService.banUser(dto))
                 .thenAnswer((Answer<UserDTO>) invocationOnMock -> invocationOnMock.getArgument(0, UserDTO.class));

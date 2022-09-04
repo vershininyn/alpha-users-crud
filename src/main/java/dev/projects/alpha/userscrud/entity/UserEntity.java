@@ -1,4 +1,4 @@
-package dev.projects.alpha.userscrud.repository;
+package dev.projects.alpha.userscrud.entity;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -28,7 +28,7 @@ public class UserEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
 //    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "user-sequence-generator")
 //    @SequenceGenerator(name = "user-sequence-generator", sequenceName = "user_sequence", allocationSize = 1, initialValue = 1)
-    private Integer id;
+    private Long id;
 
     @Column(name = "login", nullable = false, length = 25, unique = true)
     private String login;

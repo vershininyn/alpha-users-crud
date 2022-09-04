@@ -10,7 +10,7 @@ import lombok.Setter;
 @Setter
 @EqualsAndHashCode
 public class UserDTO {
-    private Integer id;
+    private Long id;
     private String login;
     private String password;
     private String firstname;

@@ -28,7 +28,7 @@ public class UsersController {
     }
 
     @PostMapping(value = "/createUser")
-    public ResponseEntity<Map<String, Integer>> createUser(@RequestBody UserRequestDTO newUser) {
+    public ResponseEntity<Map<String, Long>> createUser(@RequestBody UserRequestDTO newUser) {
         UserDTO user = usersService.createUser(newUser);
 
         return ResponseEntity.ok(Map.of("id", user.getId()));
@@ -42,7 +42,7 @@ public class UsersController {
     }
 
     @PutMapping(value = "/banUser")
-    public ResponseEntity<UserDTO> banUser(@RequestBody Map<String, Integer> dto) {
+    public ResponseEntity<UserDTO> banUser(@RequestBody Map<String, String> dto) {
         UserDTO user = usersService.banUser(dto);
 
         return ResponseEntity.ok(user);
