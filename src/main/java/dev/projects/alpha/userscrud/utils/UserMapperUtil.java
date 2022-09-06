@@ -7,7 +7,7 @@ import dev.projects.alpha.userscrud.entity.UserEntity;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class UserMapper {
+public class UserMapperUtil {
 
     public static UserDTO mapEntityToDto(UserEntity entity) {
         return UserDTO.builder()
@@ -23,7 +23,7 @@ public class UserMapper {
 
     public static List<UserDTO> mapEntityListToDtoList(List<UserEntity> list){
         return list.stream()
-                .map(UserMapper::mapEntityToDto)
+                .map(UserMapperUtil::mapEntityToDto)
                 .collect(Collectors.toList());
     }
 

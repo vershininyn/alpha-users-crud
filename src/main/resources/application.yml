@@ -7,8 +7,8 @@ server:
 spring:
   flyway:
     enabled: true
-    user: h2user
-    password: h2password
+    user: user
+    password: password
     schemas: PUBLIC
     url: jdbc:h2:file:/home/dev/projects/java/alpha/alpha-users-crud;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=TRUE
     locations: filesystem:src/main/resources/db/migration
@@ -22,7 +22,16 @@ spring:
     type: com.zaxxer.hikari.HikariDataSource
     url: jdbc:h2:file:/home/dev/projects/java/alpha/alpha-users-crud;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=TRUE
     driver-class-name: org.h2.Driver
-    username: h2user
-    password: h2password
-    hikari:
-      idle-timeout: 10000
+    username: user
+    password: password
+  jdbcTemplates:
+    selected-repo: "${REPOSITORY_SELECTED_REPO:JPA}"
+    create-user-sql: "INSERT INTO users(login, password, firstname, secondname, thirdname, is_banned) VALUES(?, ?, ?, ?, ?, ?);"
+    select-all-users-sql: "SELECT * FROM users;"
+    select-user-by-id-sql: "SELECT * FROM users WHERE id = ?;"
+    select-all-unbanned-users-sql: "SELECT * FROM users WHERE is_banned = FALSE;"
+    changed-update-user-sql: "UPDATE users SET login = ?, password= ?, firstname = ?, secondname = ?, thirdname = ?, is_banned = ? WHERE id = ?;"
+    ban-user-sql: "UPDATE users SET is_banned = TRUE WHERE id = ?;"
+
+
+

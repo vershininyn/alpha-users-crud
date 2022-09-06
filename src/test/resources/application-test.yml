@@ -18,3 +18,12 @@ spring:
     driver-class-name: org.h2.Driver
     username: user
     password: password
+  jdbcTemplates:
+    selected-repo: "${REPOSITORY_SELECTED_REPO:JPA}"
+    create-user-sql: "INSERT INTO users(login, password, firstname, secondname, thirdname, is_banned) VALUES(?, ?, ?, ?, ?, ?);"
+    select-all-users-sql: "SELECT * FROM users;"
+    select-user-by-id-sql: "SELECT * FROM users WHERE id = ?;"
+    select-all-unbanned-users-sql: "SELECT * FROM users WHERE is_banned = FALSE;"
+    delete-user-by-id-sql: "DELETE FROM users WHERE id = ?;"
+    changed-update-user-sql: "UPDATE users SET login = ?, password= ?, firstname = ?, secondname = ?, thirdname = ?, is_banned = ? WHERE id = ?;"
+    ban-user-sql: "UPDATE users SET is_banned = TRUE WHERE id = ?;"

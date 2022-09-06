@@ -2,16 +2,24 @@ package dev.projects.alpha.userscrud;
 
 import dev.projects.alpha.userscrud.entity.UserEntity;
 import dev.projects.alpha.userscrud.repository.UserEntityRepository;
-import org.junit.jupiter.api.Test;
+import dev.projects.alpha.userscrud.repository.UserRepositoryManager;
+import org.assertj.core.util.Lists;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
 @ActiveProfiles("test")
@@ -62,17 +70,68 @@ public class UsersCrudRepositoryTests {
     }*/
 
     @Autowired
-    private UserEntityRepository userRepository;
+    private UserRepositoryManager userRepositoryManager;
 
-    @Test
-    public void checkAllUsers() {
-        List<String> logins = userRepository.findAll()
-                .stream()
+    @ParameterizedTest
+    @CsvSource(value = {"JPA", "JDBC"})
+    public void checkFindAllUsers(String repositoryType) {
+        UserEntityRepository userRepository = userRepositoryManager.getRepositoryByEnvVariable(repositoryType);
+
+        ArrayList<UserEntity> usersEntities = Lists.newArrayList(userRepository.findAll());
+
+        List<String> logins = usersEntities.stream()
                 .map(UserEntity::getLogin)
                 .collect(Collectors.toList());
 
         assertEquals(3, logins.size());
         assertEquals(List.of("first_user", "second_user", "third_user"), logins);
         assertFalse(logins.contains("fourth_user"));
+    }
+
+    @ParameterizedTest
+    @CsvSource(value = {"JPA", "JDBC"})
+    public void checkFindByCorrectIdUser(String repositoryType) {
+        UserEntityRepository userRepository = userRepositoryManager.getRepositoryByEnvVariable(repositoryType);
+
+        UserEntity entity = userRepository.findById(1L).get();
+
+        assertEquals(1L, entity.getId());
+        assertEquals("first_user", entity.getLogin());
+        assertEquals("password", entity.getPassword());
+        assertEquals("firstname", entity.getFirstname());
+        assertEquals("secondname", entity.getSecondname());
+        assertEquals("thirdname", entity.getThirdname());
+        assertEquals(false, entity.getIsBanned());
+    }
+
+    @ParameterizedTest
+    @CsvSource(value = {"JPA", "JDBC"})
+    public void checkFindByIncorrectIdUser(String repositoryType) {
+        UserEntityRepository userRepository = userRepositoryManager.getRepositoryByEnvVariable(repositoryType);
+
+        final Optional<UserEntity> entity = userRepository.findById(-1L);
+
+        assertThrows(IllegalArgumentException.class, () -> {
+            entity.orElseThrow(() -> new IllegalArgumentException("The some IAE"));
+        });
+    }
+
+    @ParameterizedTest
+    @CsvSource(value = {"JPA", "JDBC"})
+    public void checkSaveUser(String repositoryType) {
+        UserEntityRepository userRepository = userRepositoryManager.getRepositoryByEnvVariable(repositoryType);
+
+        UserEntity entity = UserEntity.builder()
+                .login(UUID.randomUUID().toString().substring(0, 15))
+                .password("password")
+                .firstname("firstname")
+                .secondname("secondname")
+                .thirdname("thirdname")
+                .isBanned(false)
+                .build();
+
+        UserEntity result = userRepository.save(entity);
+
+        assertTrue(List.of(4L, 5L).contains(result.getId()));
     }
 }

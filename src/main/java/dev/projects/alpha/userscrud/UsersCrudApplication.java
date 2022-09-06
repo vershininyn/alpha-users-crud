@@ -6,9 +6,7 @@ import org.springframework.boot.autoconfigure.jms.activemq.ActiveMQAutoConfigura
 
 @SpringBootApplication(exclude = ActiveMQAutoConfiguration.class)
 public class UsersCrudApplication {
-
 	public static void main(String[] args) {
 		SpringApplication.run(UsersCrudApplication.class, args);
 	}
-
 }

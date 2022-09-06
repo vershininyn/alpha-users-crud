@@ -29,9 +29,6 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 @Transactional(isolation = Isolation.REPEATABLE_READ)
 public class UsersCrudControllerTests {
     @Autowired
-    private UserEntityRepository usersRepository;
-
-    @Autowired
     private UsersService usersService;
 
     @Autowired

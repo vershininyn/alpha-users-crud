@@ -4,35 +4,58 @@ import dev.projects.alpha.userscrud.domain.UserDTO;
 import dev.projects.alpha.userscrud.domain.UserRequestDTO;
 import dev.projects.alpha.userscrud.entity.UserEntity;
 import dev.projects.alpha.userscrud.repository.UserEntityRepository;
-import dev.projects.alpha.userscrud.utils.UserMapper;
+import dev.projects.alpha.userscrud.repository.UserRepositoryManager;
+import dev.projects.alpha.userscrud.utils.UserMapperUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.PostConstruct;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 @Service
+@ComponentScan("dev.projects.alpha.userscrud.repository")
 public class UsersService {
+    @Autowired
+    private UserRepositoryManager repositoryManager;
+
     private UserEntityRepository userRepository;
 
-    @Autowired
-    public UsersService (UserEntityRepository userRepository) {
-        this.userRepository = userRepository;
+    @Value("${spring.jdbcTemplates.selected-repo}")
+    private String SELECTED_REPO;
+
+    public UsersService (UserRepositoryManager repositoryManager) {
+
+    }
+
+    @PostConstruct
+    public void initializeService() {
+        userRepository = repositoryManager.getRepositoryByEnvVariable(SELECTED_REPO);
     }
 
     public UserDTO createUser(UserRequestDTO userRequest) {
-        UserEntity entity = UserMapper.mapDtoToEntity(userRequest),
+        UserEntity entity = UserMapperUtil.mapDtoToEntity(userRequest),
                 savedEntity = userRepository.save(entity);
 
-        return UserMapper.mapRequestDtoToUserDto(savedEntity.getId(), userRequest);
+        return UserMapperUtil.mapRequestDtoToUserDto(savedEntity.getId(), userRequest);
     }
 
     public UserDTO changeUser(UserDTO user) {
-        //TODO: check other branches
-
         UserEntity entity = userRepository.findById(user.getId()).get();
 
-        return UserMapper.mapEntityToDto(entity);
+        entity.setLogin(user.getLogin());
+        entity.setPassword(user.getPassword());
+        entity.setFirstname(user.getFirstname());
+        entity.setSecondname(user.getSecondname());
+        entity.setThirdname(user.getThirdname());
+        entity.setIsBanned(user.isBanned());
+
+        UserEntity savedEntity = userRepository.save(entity);
+
+        return UserMapperUtil.mapEntityToDto(savedEntity);
     }
 
     public UserDTO banUser(Map<String, String> dto) {
@@ -43,18 +66,20 @@ public class UsersService {
 
         UserEntity savedEntity = userRepository.save(entity);
 
-        return UserMapper.mapEntityToDto(savedEntity);
+        return UserMapperUtil.mapEntityToDto(savedEntity);
     }
 
     public List<UserDTO> getAllUsers() {
-        List<UserEntity> list = userRepository.findAll();
+        List<UserEntity> list = new ArrayList();
 
-        return UserMapper.mapEntityListToDtoList(list);
+        userRepository.findAll().forEach(list::add);
+
+        return UserMapperUtil.mapEntityListToDtoList(list);
     }
 
     public List<UserDTO> getAllUnbannedUsers() {
         List<UserEntity> list = userRepository.findByIsBanned(false);
 
-        return UserMapper.mapEntityListToDtoList(list);
+        return UserMapperUtil.mapEntityListToDtoList(list);
     }
 }

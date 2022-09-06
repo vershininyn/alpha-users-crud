@@ -38,9 +38,6 @@ public class UsersCrudApplicationTests {
     @Autowired
     private MockMvc mockMvc;
 
-    @Autowired
-    private UserEntityRepository userRepository;
-
     @Mock
     private UsersService usersService;
 
