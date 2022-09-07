@@ -58,7 +58,7 @@ public class UsersCrudApplicationTests {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(newUserRequestDTO)))
                 .andDo(MockMvcResultHandlers.print())
-                .andExpect(status().isOk());
+                .andExpect(status().isCreated());
     }
 
     @Test

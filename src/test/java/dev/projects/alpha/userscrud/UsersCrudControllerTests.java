@@ -5,7 +5,6 @@ import dev.projects.alpha.userscrud.controller.UsersController;
 import dev.projects.alpha.userscrud.domain.UserDTO;
 import dev.projects.alpha.userscrud.domain.UserRequestDTO;
 import dev.projects.alpha.userscrud.domain.UsersListDTO;
-import dev.projects.alpha.userscrud.repository.UserEntityRepository;
 import dev.projects.alpha.userscrud.service.UsersService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,12 +42,12 @@ public class UsersCrudControllerTests {
 
         UserRequestDTO newUserRequestDTO = objectMapper.readValue(jsonNewUserDTOFile, UserRequestDTO.class);
 
-        ResponseEntity<Map<String, Long>> responseEntity = usersController.createUser(newUserRequestDTO);
+        ResponseEntity<Map<String, String>> responseEntity = usersController.createUser(newUserRequestDTO);
 
-        assertEquals(responseEntity.getStatusCodeValue(), 200);
+        assertEquals(responseEntity.getStatusCodeValue(), 201);
+        assertEquals(responseEntity.getHeaders().getLocation().getPath(), "/4");
         assertEquals(responseEntity.getBody().size(), 1);
-        assertEquals(responseEntity.getBody().get("id"), 4);
-//        assertThat(responseEntity.getHeaders().getLocation().getPath()).isEqualTo("/1");
+        assertEquals(responseEntity.getBody().get("id"), "4");
     }
 
     @Test

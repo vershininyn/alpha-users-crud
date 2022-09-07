@@ -1,0 +1,21 @@
+version: '3.7'
+
+services:
+  alpha-users-crud-jpa:
+    build: .
+    image: alpha-users-crud-jpa-img
+    environment:
+      SERVER_PORT: 8080
+      SELECTED_REPO: JPA
+      DATABASE_MEM_NAME: alpha-users-zero
+    ports:
+      - "8080:8080"
+  alpha-users-crud-jdbc:
+    build: .
+    image: alpha-users-crud-jdbc-img
+    environment:
+      SERVER_PORT: 8081
+      SELECTED_REPO: JDBC
+      DATABASE_MEM_NAME: alpha-users-one
+    ports:
+      - "8081:8081"

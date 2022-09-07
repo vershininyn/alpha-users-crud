@@ -3,17 +3,15 @@ package dev.projects.alpha.userscrud.repository;
 import dev.projects.alpha.userscrud.entity.UserEntity;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.PreparedStatementCreator;
 import org.springframework.jdbc.core.ResultSetExtractor;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.sql.Connection;
 import java.sql.PreparedStatement;
-import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Iterator;
 import java.util.List;
@@ -21,20 +19,12 @@ import java.util.Optional;
 
 @Component
 @Qualifier("user-jdbc-entity-repository")
-//@Transactional(
-//        readOnly = true
-//)
+@PropertySource(value={"classpath:application.yml"})
 public class UserJDBCRepository implements UserEntityRepository {
     private JdbcTemplate jdbcTemplate;
 
     @Value("${spring.jdbcTemplates.create-user-sql}")
     private String INSERT_STATEMENT;
-
-//    @Value("${spring.jdbcTemplate.changed-update-user-sql}")
-//    private String CHANGED_UPDATE_STATEMENT;
-
-//    @Value("${spring.jdbcTemplate.ban-user-sql}")
-//    private String BAN_USER_STATEMENT;
 
     @Value("${spring.jdbcTemplates.select-all-users-sql}")
     private String SELECT_ALL_USERS;
@@ -52,47 +42,6 @@ public class UserJDBCRepository implements UserEntityRepository {
         this.jdbcTemplate = jdbcTemplate;
     }
 
-    /*public UserDTO createUser(UserRequestDTO userRequest) {
-
-    }
-
-    public UserDTO changeUser(UserDTO user) {
-        UserEntity userEntity = jdbcTemplate.queryForObject(CHANGED_UPDATE_STATEMENT,
-                new UserJDBCMapper(),
-                new Object[]{user.getLogin(),
-                        user.getPassword(),
-                        user.getFirstname(),
-                        user.getSecondname(),
-                        user.getThirdname(),
-                        user.isBanned(),
-                        user.getId()});
-
-        return UserMapperUtil.mapEntityToDto(userEntity);
-    }
-
-    @Override
-    public UserDTO banUser(Map<String, String> dto) {
-        UserEntity userEntity = jdbcTemplate.queryForObject(BAN_USER_STATEMENT, new UserJDBCMapper(), new Object[]{Long.valueOf(dto.get("id"))});
-        userEntity.setIsBanned(true);
-
-        return UserMapperUtil.mapEntityToDto(userEntity);
-    }
-
-    @Override
-    public List<UserDTO> getAllUsers() {
-
-
-        return UserMapperUtil.mapEntityListToDtoList(userList);
-    }
-
-    @Override
-    public List<UserDTO> getAllUnbannedUsers() {
-        List<UserEntity> userList = jdbcTemplate.queryForList(SELECT_ALL_UNBANNED_USERS, UserEntity.class);
-
-        return UserMapperUtil.mapEntityListToDtoList(userList);
-    }*/
-
-//    @Transactional
     @Override
     public <S extends UserEntity> S save(S entity) {
         final KeyHolder keyHolder = new GeneratedKeyHolder();
@@ -115,13 +64,11 @@ public class UserJDBCRepository implements UserEntityRepository {
         return entity;
     }
 
-//    @Transactional
     @Override
     public <S extends UserEntity> Iterable<S> saveAll(Iterable<S> entities) {
         return null;
     }
 
-//    @Transactional
     @Override
     public Optional<UserEntity> findById(Long aLong) {
         final UserJDBCMapper mapper = new UserJDBCMapper();
@@ -137,7 +84,6 @@ public class UserJDBCRepository implements UserEntityRepository {
         return false;
     }
 
-    @Transactional
     @Override
     public Iterable<UserEntity> findAll() {
         return jdbcTemplate.query(SELECT_ALL_USERS, new UserJDBCMapper());
@@ -153,19 +99,16 @@ public class UserJDBCRepository implements UserEntityRepository {
         return 0;
     }
 
-//    @Transactional
     @Override
     public void deleteById(Long aLong) {
         jdbcTemplate.update(DELETE_USER_BY_ID, new Object[]{aLong});
     }
 
-//    @Transactional
     @Override
     public void delete(UserEntity entity) {
         deleteById(entity.getId());
     }
 
-//    @Transactional
     @Override
     public void deleteAllById(Iterable<? extends Long> longs) {
         Iterator<? extends Long> iterator = longs.iterator();
@@ -185,7 +128,6 @@ public class UserJDBCRepository implements UserEntityRepository {
 
     }
 
-//    @Transactional
     @Override
     public List<UserEntity> findByIsBanned(boolean banned) {
         return jdbcTemplate.queryForList(SELECT_ALL_UNBANNED_USERS, UserEntity.class);

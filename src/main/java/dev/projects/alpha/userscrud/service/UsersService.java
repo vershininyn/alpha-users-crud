@@ -9,6 +9,7 @@ import dev.projects.alpha.userscrud.utils.UserMapperUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
@@ -18,6 +19,7 @@ import java.util.Map;
 
 @Service
 @ComponentScan("dev.projects.alpha.userscrud.repository")
+@PropertySource(value={"classpath:application.yml"})
 public class UsersService {
     @Autowired
     private UserRepositoryManager repositoryManager;
@@ -33,6 +35,8 @@ public class UsersService {
 
     @PostConstruct
     public void initializeService() {
+        System.out.println("++++++ USING REPO: "+SELECTED_REPO+" ++++++");
+
         userRepository = repositoryManager.getRepositoryByEnvVariable(SELECTED_REPO);
     }
 

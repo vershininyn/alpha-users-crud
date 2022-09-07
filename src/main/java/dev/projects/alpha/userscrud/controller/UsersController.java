@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.net.URI;
 import java.util.List;
 import java.util.Map;
 
@@ -28,10 +29,10 @@ public class UsersController {
     }
 
     @PostMapping(value = "/createUser")
-    public ResponseEntity<Map<String, Long>> createUser(@RequestBody UserRequestDTO newUser) {
-        UserDTO user = usersService.createUser(newUser);
+    public ResponseEntity<Map<String, String>> createUser(@RequestBody UserRequestDTO newUser) {
+        final UserDTO user = usersService.createUser(newUser);
 
-        return ResponseEntity.ok(Map.of("id", user.getId()));
+        return ResponseEntity.created(URI.create("/"+user.getId())).body(Map.of("id", user.getId().toString()));
     }
 
     @PutMapping(value = "/changeUser")

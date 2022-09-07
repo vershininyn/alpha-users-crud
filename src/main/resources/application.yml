@@ -1,6 +1,6 @@
 server:
-  port: 8080
-  address: 127.0.0.1
+  port: ${SERVER_PORT:8080}
+  address: 0.0.0.0
   servlet:
       context-path: /api
 
@@ -10,8 +10,9 @@ spring:
     user: user
     password: password
     schemas: PUBLIC
-    url: jdbc:h2:file:/home/dev/projects/java/alpha/alpha-users-crud;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=TRUE
-    locations: filesystem:src/main/resources/db/migration
+    url: jdbc:h2:mem:${DATABASE_MEM_NAME:alpha-users-crud};DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=TRUE
+#    locations: filesystem:src/main/resources/db/migration
+    locations: classpath:db/migration
     validate-on-migrate: true
   jpa:
     database-platform: org.hibernate.dialect.H2Dialect
@@ -20,18 +21,19 @@ spring:
     show-sql: false
   datasource:
     type: com.zaxxer.hikari.HikariDataSource
-    url: jdbc:h2:file:/home/dev/projects/java/alpha/alpha-users-crud;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=TRUE
+    url: jdbc:h2:mem:${DATABASE_MEM_NAME:alpha-users-crud};DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=TRUE
     driver-class-name: org.h2.Driver
     username: user
     password: password
   jdbcTemplates:
-    selected-repo: "${REPOSITORY_SELECTED_REPO:JPA}"
+    selected-repo: ${SELECTED_REPO:JPA}
     create-user-sql: "INSERT INTO users(login, password, firstname, secondname, thirdname, is_banned) VALUES(?, ?, ?, ?, ?, ?);"
     select-all-users-sql: "SELECT * FROM users;"
     select-user-by-id-sql: "SELECT * FROM users WHERE id = ?;"
     select-all-unbanned-users-sql: "SELECT * FROM users WHERE is_banned = FALSE;"
     changed-update-user-sql: "UPDATE users SET login = ?, password= ?, firstname = ?, secondname = ?, thirdname = ?, is_banned = ? WHERE id = ?;"
     ban-user-sql: "UPDATE users SET is_banned = TRUE WHERE id = ?;"
+    delete-user-by-id-sql: "DELETE FROM users WHERE id = ?;"
 
 
 

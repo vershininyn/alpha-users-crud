@@ -9,6 +9,8 @@ import org.junit.jupiter.params.provider.CsvSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,6 +25,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
 @ActiveProfiles("test")
+@Transactional(isolation = Isolation.REPEATABLE_READ)
 public class UsersCrudRepositoryTests {
     /*private static final PostgreSQLContainer postgresSQLContainer;
 
@@ -132,6 +135,8 @@ public class UsersCrudRepositoryTests {
 
         UserEntity result = userRepository.save(entity);
 
-        assertTrue(List.of(4L, 5L).contains(result.getId()));
+        List<UserEntity> users = Lists.newArrayList(userRepository.findAll());
+
+        assertTrue(users.size() > 3);
     }
 }

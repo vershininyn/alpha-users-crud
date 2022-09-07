@@ -5,7 +5,8 @@ spring:
     password: password
     schemas: PUBLIC
     url: jdbc:h2:mem:test;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=TRUE
-    locations: filesystem:src/main/resources/db/migration
+#    locations: filesystem:src/main/resources/db/migration
+    locations: classpath:db/migration
     validate-on-migrate: true
   jpa:
     database-platform: org.hibernate.dialect.H2Dialect
@@ -19,7 +20,7 @@ spring:
     username: user
     password: password
   jdbcTemplates:
-    selected-repo: "${REPOSITORY_SELECTED_REPO:JPA}"
+    selected-repo: ${SELECTED_REPO:JPA}
     create-user-sql: "INSERT INTO users(login, password, firstname, secondname, thirdname, is_banned) VALUES(?, ?, ?, ?, ?, ?);"
     select-all-users-sql: "SELECT * FROM users;"
     select-user-by-id-sql: "SELECT * FROM users WHERE id = ?;"

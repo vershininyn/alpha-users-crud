@@ -11,9 +11,8 @@
 
     <groupId>dev.projects.alpha</groupId>
     <artifactId>users-crud</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
-    <packaging>war</packaging>
-    <name>users-crud</name>
+    <version>0.1</version>
+    <packaging>jar</packaging>
     <description>Demo project for Spring Boot</description>
 
     <properties>
@@ -27,6 +26,8 @@
         <flyway-maven-plugin.version>9.2.0</flyway-maven-plugin.version>
         <postgresql-testcontainers.version>1.17.3</postgresql-testcontainers.version>
         <postgresql.version>42.5.0</postgresql.version>
+        <spring-boot-maven-plugin.version>2.7.3</spring-boot-maven-plugin.version>
+        <spring-boot-conf-proc.version>2.7.3</spring-boot-conf-proc.version>
     </properties>
 
     <dependencies>
@@ -116,7 +117,13 @@
             <artifactId>jackson-databind</artifactId>
             <version>${jackson.version}</version>
         </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-configuration-processor</artifactId>
+            <version>${spring-boot-conf-proc.version}</version>
+        </dependency>
     </dependencies>
+
     <dependencyManagement>
         <dependencies>
             <dependency>
@@ -141,8 +148,8 @@
                         <location>filesystem:src/main/resources/db/migration</location>
                     </locations>
                     <cleanDisabled>false</cleanDisabled>
-                    <user>h2user</user>
-                    <password>h2password</password>
+                    <user>user</user>
+                    <password>password</password>
                     <schemas>
                         <schema>PUBLIC</schema>
                     </schemas>
@@ -151,7 +158,17 @@
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
+                <version>${spring-boot-maven-plugin.version}</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>repackage</goal>
+                        </goals>
+                    </execution>
+                </executions>
                 <configuration>
+                    <finalName>alpha-users-crud</finalName>
+                    <outputDirectory>docker-compose/</outputDirectory>
                     <excludes>
                         <exclude>
                             <groupId>org.projectlombok</groupId>
