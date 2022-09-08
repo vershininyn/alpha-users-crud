@@ -41,11 +41,10 @@ CREATE TABLE users (
 
                 - Наличие Unit тестов
 
-
-
 6. Дополнительные требования к реализации:
 
-- Интеграционные тесты сервиса с JDBC репозиторием с использованием TestContainers https://mvnrepository.com/artifact/org.testcontainers/junit-jupiter
+- (За отведенное дополнительное время (1 день) закончить не успел) Интеграционные тесты сервиса с 
+JDBC репозиторием с использованием TestContainers https://mvnrepository.com/artifact/org.testcontainers/junit-jupiter
 
 - Наличие docker-compose.yml файла запускающее 2 копии приложения на разных портах, первое запускается с использованием JPA репозитория, второе с JDBC.
 
